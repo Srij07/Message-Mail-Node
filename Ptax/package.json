@@ -1,0 +1,19 @@
+{
+  "name": "otp-mail",
+  "version": "1.0.0",
+  "description": "ptax otp mail",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "author": "Srijib Sen",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.2",
+    "express": "^4.19.2",
+    "form-data": "^4.0.0",
+    "fs": "^0.0.1-security",
+    "nodemailer": "^6.9.14"
+  }
+}

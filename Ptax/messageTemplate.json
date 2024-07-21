@@ -1,0 +1,12 @@
+{
+    "templ":[
+        {
+            "id":"1",
+            "message":"OTP to validate your mobile number is ?. DITE GoWB"
+        },
+        {
+            "id":"2",
+            "message":"OTP to validate your mobile number is ?. DITE GoWB ?"
+        }
+    ]
+}
