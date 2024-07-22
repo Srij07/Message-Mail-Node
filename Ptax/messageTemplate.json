@@ -2,11 +2,27 @@
     "templ":[
         {
             "id":"1",
+            "name":"Mobile OTP",
+            "templateid":"1407165881850786099",
             "message":"OTP to validate your mobile number is ?. DITE GoWB"
         },
         {
             "id":"2",
-            "message":"OTP to validate your mobile number is ?. DITE GoWB ?"
+            "name":"Enrolment Acknowledgement",
+            "templateid":"1307172163736875237",
+            "message":"New Enrollment Number generated against your application and your Enrollment Number is ? and password is ?. DITE GoWB"
+        },
+        {
+            "id":"3",
+            "name":"Enrolment Payment Acknowledgement",
+            "templateid":"1307172163758833484",
+            "message":"Payment of Rs. ? has been received for Enrollment Number(s) ?. Please check your payment status in the portal. DITE GoWB"
+        },
+        {
+            "id":"4",
+            "name":"Enrolment Payment Reminder",
+            "templateid":"1307172163770878421",
+            "message":"Payment for Enrollment Number ? is due for the period ?. Please pay now if not already paid. DITE GoWB"
         }
     ]
 }

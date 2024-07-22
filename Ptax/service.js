@@ -2,6 +2,8 @@ const fs = require('fs');
 const axios = require('axios');
 const FormData = require('form-data');
 var nodemailer = require('nodemailer');
+const crypto = require('crypto');
+const https = require('https');
 
 module.exports = {
     test: function () {
@@ -12,40 +14,44 @@ module.exports = {
         return status;
     },
 
-    sendMessage: async function (request) {
+    sendMessage: async function (msg_tmplt_id,mobile,param) {
         //Send Message
         let rawdata = fs.readFileSync('messageTemplate.json');
         let templates= JSON.parse(rawdata);
         var msg = ""
         var contents = ""
-        var id = request.msg_tmplt_id
+        var templateid = ""
         var i = 0;
         var returnMssage ={}
         
         templates.templ.forEach(function(tmpl) {
-            if(tmpl.id == id){
+            if(tmpl.id == msg_tmplt_id){
                 msg = tmpl.message
+                templateid = tmpl.templateid
             }
         });
 
-        contents = msg.replace(/\?/g,function(){return request.param[i++]})
+        contents = msg.replace(/\?/g,function(){return param[i++]})
 
         //Call Message-Gateway
-        let data = new FormData();
-        data.append('mobile', request.mobile);
-        data.append('message', contents);
-        data.append('templateid', '1407165881850786099');
-        data.append('extra', '');
-        data.append('passkey', 'sms_ptax_999666_$#');
+        var bodyFormData = new FormData();
+        bodyFormData.append('mobile', mobile);
+        bodyFormData.append('message', contents);
+        bodyFormData.append('templateid', templateid);
+        bodyFormData.append('extra', '');
+        bodyFormData.append('passkey', 'sms_ptax_999666_$#');
 
         let config = {
         method: 'post',
-        maxBodyLength: Infinity,
         url: 'https://barta.wb.gov.in/send_sms_ptax.php',
-        headers: { 
-            ...data.getHeaders()
+        headers: {
+            "Content-Type": "multipart/form-data",
+            "Connection" : "keep-alive"
         },
-        data : data
+        data : bodyFormData,
+        httpsAgent: new https.Agent({
+            secureOptions: crypto.constants.SSL_OP_LEGACY_SERVER_CONNECT,
+          })
         };
 
         let a = await axios.request(config)
@@ -56,6 +62,7 @@ module.exports = {
             };
         })
         .catch((error) => {
+            console.log(error)
             returnMssage = {
                 "code":500,
                 "message": "Sending Failed"
@@ -65,29 +72,28 @@ module.exports = {
         return returnMssage;
     },
 
-    sendMail: async function (request) {
+    sendMail: async function (mail_tmplt_id,sub_param,txt_param,mail) {
         //Send Message
         let rawdata = fs.readFileSync('mailTemplate.json');
         let templates= JSON.parse(rawdata);
         var body = ""
         var subject = ""
-        var id = request.mail_tmplt_id
         var i = 0;
         var j = 0;
         var returnMssage ={}
         
         templates.templ.forEach(function(tmpl) {
-            if(tmpl.id == id){
+            if(tmpl.id == mail_tmplt_id){
                 subject = tmpl.subject
                 body = tmpl.text
             }
         });
 
-        subject = subject.replace(/\?/g,function(){return request.sub_param[i++]})
-        body = body.replace(/\?/g,function(){return request.txt_param[j++]})
+        subject = subject.replace(/\?/g,function(){return sub_param[i++]})
+        body = body.replace(/\?/g,function(){return txt_param[j++]})
         console.log(body)
             //Call Mail-Gateway
-            var status = await send(request.mail, subject, body)
+            var status = await send(mail, subject, body)
 
             if (status){
                 returnMssage = {

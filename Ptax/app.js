@@ -15,13 +15,13 @@ app.get("/status", (request, response) => {
  });
 
 app.post("/msg", async (req, res, next) => {
-    rersult = await service.sendMessage(req.body)
+    rersult = await service.sendMessage(req.body.msg_tmplt_id,req.body.mobile,req.body.param)
     
     res.status(200).json(rersult);
    });
 
 app.post("/mail", async (req, res, next) => {
-    rersult = await service.sendMail(req.body)
+    rersult = await service.sendMail(req.body.mail_tmplt_id,req.body.sub_param,req.body.txt_param,req.body.mail)
     
     res.status(200).json(rersult);
    });
