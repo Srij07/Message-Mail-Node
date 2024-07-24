@@ -117,16 +117,18 @@ module.exports = {
         let rawdata = fs.readFileSync('pdfTemplate.json');
         let templates= JSON.parse(rawdata);
         var path = ""
+        var name = ""
 
         templates.templ.forEach(function(tmpl) {
             if(tmpl.id == request.pdf_tmplt_id){
                 path = tmpl.path
+                name = tmpl.name
             }
         });
-        console.log(request.data)
+        
         var compiled = ejs.compile(fs.readFileSync(path, 'utf8'));
         var html = compiled(request.data);
-        var data = await returnHtmlAsPdf(html);
+        var data = await returnHtmlAsPdf(html,name);
         return data
     }
 };
@@ -171,17 +173,13 @@ async function send(mail, subject, body){
         })
        }
 
-       async function returnHtmlAsPdf(html) {
+async function returnHtmlAsPdf(html,name) {
         return new Promise((resolve, reject) => {
             pdf.create(html).toStream(function(err, buffer){
                 if(err){
                     resolve(null);
                 }
                 resolve(buffer);
-            })
-
-            pdf.create(html).toFile('./result.pdf',() => {
-                console.log('pdf done')
             })
         });
     
