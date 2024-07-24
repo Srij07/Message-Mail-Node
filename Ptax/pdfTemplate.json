@@ -1,0 +1,12 @@
+{
+    "templ":[
+        {
+            "id":"1",
+            "path":"./pdfTemplate/template.html"
+        },
+        {
+            "id":"2",
+            "path":"./pdfTemplate/template1.html"
+        }
+    ]
+}

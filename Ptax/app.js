@@ -2,6 +2,9 @@ var service = require('./service');
 const express = require('express');
 const app = express ();
 app.use(express.json());
+var fs = require('fs');
+var ejs = require('ejs');
+var pdf = require('html-pdf')
 
 const port = process.env.PORT || 3000;
 
@@ -24,4 +27,10 @@ app.post("/mail", async (req, res, next) => {
     rersult = await service.sendMail(req.body.mail_tmplt_id,req.body.sub_param,req.body.txt_param,req.body.mail)
     
     res.status(200).json(rersult);
+   });
+
+   app.post("/pdf", async (req, res, next) => {
+    rersult = await service.sendPdf(req.body)
+
+    rersult.pipe(res);
    });

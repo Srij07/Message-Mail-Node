@@ -4,6 +4,8 @@ const FormData = require('form-data');
 var nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const https = require('https');
+var ejs = require('ejs');
+var pdf = require('html-pdf')
 
 module.exports = {
     test: function () {
@@ -109,6 +111,23 @@ module.exports = {
             }
         console.log(returnMssage)
         return returnMssage;
+    },
+
+    sendPdf: async function (request) {
+        let rawdata = fs.readFileSync('pdfTemplate.json');
+        let templates= JSON.parse(rawdata);
+        var path = ""
+
+        templates.templ.forEach(function(tmpl) {
+            if(tmpl.id == request.pdf_tmplt_id){
+                path = tmpl.path
+            }
+        });
+        console.log(request.data)
+        var compiled = ejs.compile(fs.readFileSync(path, 'utf8'));
+        var html = compiled(request.data);
+        var data = await returnHtmlAsPdf(html);
+        return data
     }
 };
 
@@ -151,3 +170,19 @@ async function send(mail, subject, body){
           });
         })
        }
+
+       async function returnHtmlAsPdf(html) {
+        return new Promise((resolve, reject) => {
+            pdf.create(html).toStream(function(err, buffer){
+                if(err){
+                    resolve(null);
+                }
+                resolve(buffer);
+            })
+
+            pdf.create(html).toFile('./result.pdf',() => {
+                console.log('pdf done')
+            })
+        });
+    
+    }
